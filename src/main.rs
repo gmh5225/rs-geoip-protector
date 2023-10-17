@@ -34,10 +34,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     info!("remote: {}", c_args.remote);
     info!("block: {}", c_args.block);
     let reader = maxminddb::Reader::open_readfile("./GeoLite2-Country.mmdb").unwrap();
-
+/*
     let ip: IpAddr = FromStr::from_str("113.57.107.91").unwrap();
     let country: geoip2::Country = reader.lookup(ip).unwrap();
-    info!("country is {:?}", country.country.unwrap().iso_code.unwrap());
+    info!("country is {:?}", country.country.unwrap().iso_code.unwrap());*/
 
 
     //
