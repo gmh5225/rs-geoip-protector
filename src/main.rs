@@ -5,6 +5,7 @@ use maxminddb::geoip2;
 use std::net::IpAddr;
 use std::str::FromStr;
 use clap::Parser;
+use tokio::io::AsyncWriteExt;
 
 use tokio::net::{TcpListener, TcpStream};
 
@@ -54,7 +55,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         if income_ip.to_owned() != "127.0.0.1" && income_ip.to_owned() != "0.0.0.0" {
             let ip: IpAddr = FromStr::from_str(income_ip.as_str()).unwrap();
             let country: geoip2::Country = reader.lookup(ip).unwrap();
-            info!("country is {:?}", country.country.unwrap().iso_code.unwrap());
+            let country_short_code =  country.country.unwrap().iso_code.unwrap();
+            info!("country is {:?}", country_short_code);
+
+            let block_list = c_args.block.split(",");
+            let mut is_block = false;
+            for block in block_list {
+                if block == country_short_code.to_owned() {
+                    is_block = true;
+                    break;
+                }
+            }
+            if is_block {
+                info!("Block this ip: {}, country block list: {}, income country:{}", income_ip, c_args.block, country_short_code);
+                socket.shutdown().await?;
+                continue
+            }
+
         } else {
             info!("Localhost is just bypass");
         }
