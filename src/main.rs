@@ -61,7 +61,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let block_list = c_args.block.split(",");
             let mut is_block = false;
             for block in block_list {
-                if block == country_short_code.to_owned() {
+                if block == country_short_code {
                     is_block = true;
                     break;
                 }
